@@ -1,0 +1,296 @@
+<template>
+  <div>
+    <div class="container-fluid">
+      <div class="row">
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+          <div
+            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+          >
+            <h1 class="h2">送洗登記</h1>
+            <div class="btn-toolbar mb-2 mb-md-0"></div>
+          </div>
+
+          <div class="d-flex">
+            <!-- 左側欄位-->
+            <div class="container w-50">
+              <div class="row w-75">
+                <input
+                  type="text"
+                  class="form-control col me-4 text-center"
+                  placeholder="請輸入姓名"
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                  v-model="userData.name"
+                />
+
+                <input
+                  type="text"
+                  class="form-control col me-1"
+                  placeholder="連絡電話"
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                  v-model="userData.tel"
+                />
+
+                <input
+                  type="text"
+                  class="form-control col"
+                  placeholder="末五碼"
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                  v-model="userData.lastfive"
+                />
+              </div>
+              <div class="row mt-4 w-75 card">
+                <div class="card card-body">
+                  <button
+                    class="btn btn-outline-primary mb-2"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseExample"
+                    aria-expanded="false"
+                    aria-controls="collapseExample"
+                  >
+                    衣物分類
+                  </button>
+                  <div class="collapse" id="collapseExample">
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary btn-sm m-1"
+                      data-bs-toggle="button"
+                      autocomplete="off"
+                      value="棉T"
+                      @click="addNewClothing($event.target.value)"
+                    >
+                      棉T
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary btn-sm m-1"
+                      data-bs-toggle="button"
+                      autocomplete="off"
+                      value="襯衫"
+                      @click="addNewClothing($event.target.value)"
+                    >
+                      襯衫
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary btn-sm m-1"
+                      data-bs-toggle="button"
+                      autocomplete="off"
+                      value="西裝上衣"
+                      @click="addNewClothing($event.target.value)"
+                    >
+                      西裝上衣
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-4 w-75 card">
+                <div class="card card-body">
+                  <button
+                    class="btn btn-outline-primary mb-2"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseExample-a"
+                    aria-expanded="false"
+                    aria-controls="collapseExample-a"
+                  >
+                    床組分類
+                  </button>
+                  <div class="collapse" id="collapseExample-a">
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary btn-sm m-1"
+                      data-bs-toggle="button"
+                      autocomplete="off"
+                      value="床組(整套)"
+                      @click="addNewClothing($event.target.value)"
+                    >
+                      床組(整套)
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary btn-sm m-1"
+                      data-bs-toggle="button"
+                      autocomplete="off"
+                      value="床包"
+                      @click="addNewClothing($event.target.value)"
+                    >
+                      床包
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary btn-sm m-1"
+                      data-bs-toggle="button"
+                      autocomplete="off"
+                      value="被套"
+                      @click="addNewClothing($event.target.value)"
+                    >
+                      被套
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary btn-sm m-1"
+                      data-bs-toggle="button"
+                      autocomplete="off"
+                      value="枕頭套"
+                      @click="addNewClothing($event.target.value)"
+                    >
+                      枕頭套
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 右側 -->
+            <div class="container w-50">
+              <ul class="border border-2 p-3">
+                <li
+                  class="row justify-content-center pb-2 mb-2 border-bottom"
+                  v-for="(item, key) in userData.clothing"
+                  :key="key"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger btn-close my-auto col-1 me-5"
+                    @click="removeClothing(key)"
+                  ></button>
+                  <span class="col-2 badge bg-light text-dark fs-6 my-auto">{{
+                    key
+                  }}</span>
+                  <div class="col-3 d-flex">
+                    <div class="input-group input-group-sm">
+                      <div class="input-group input-group-sm">
+                        <input
+                          type="number"
+                          class="form-control mb-2"
+                          aria-label="Sizing example input"
+                          aria-describedby="inputGroup-sizing-sm"
+                          v-model="item.num"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <span class="col-2 badge bg-light text-dark fs-6 my-auto"
+                    >數量: {{ item.num }}
+                  </span>
+                </li>
+                <li class="d-flex flex-column m-3 pb-3 border-bottom">
+                  <textarea
+                    class="form-control"
+                    aria-label="With textarea"
+                    v-model="userData.remark"
+                  ></textarea>
+                </li>
+                <li class="d-flex justify-content-between">
+                  <span class="badge bg-light text-dark fs-4 my-auto"
+                    >總計送洗:{{ parseInt(userData.total) }}件
+                  </span>
+                  <div>
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary me-3"
+                      @click="clearAll()"
+                    >
+                      取消
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary"
+                      @click="addData()"
+                    >
+                      確定送出
+                    </button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+import axios from "axios";
+export default {
+  data() {
+    return {
+      userData: {
+        name: "",
+        tel: "",
+        lastfive: "",
+        time: null,
+        progress: "送洗中",
+        remark: "",
+        clothing: {},
+        total: 0,
+      },
+    };
+  },
+  created() {
+    this.getData();
+  },
+  mounted() {
+    const now = new Date();
+    this.userData.time = now.toLocaleString();
+  },
+  methods: {
+    getData() {
+      let vm = this;
+      axios
+        .get("http://localhost:3000/posts")
+        .then((response) => {
+          vm.customer = response.data;
+          console.log(response.data);
+        })
+        .catch((error) => console.log(error));
+    },
+    addData() {
+      let vm = this;
+      axios
+        .post("http://localhost:3000/posts", vm.userData)
+        .then((response) => {
+          vm.customer = response.data;
+          console.log(response.data);
+          vm.clearAll();
+        })
+        .catch((error) => console.log(error));
+    },
+    addNewClothing(val) {
+      let vm = this;
+      vm.$set(vm.userData.clothing, val, {
+        num: 0,
+      });
+
+      console.log(vm.userData);
+    },
+    clearAll() {
+      let vm = this;
+      vm.userData.clothing = {};
+      vm.userData.total = 0;
+      vm.userData.name = "";
+      vm.userData.tel = "";
+      vm.userData.lastfive = "";
+      vm.userData.remark = "";
+    },
+    removeClothing(key) {
+      let vm = this;
+      vm.$delete(vm.userData.clothing, key);
+    },
+  },
+  watch: {
+    "userData.clothing": {
+      handler: function (newVal, oldVal) {
+        this.userData.total = Object.values(newVal).reduce(
+          (total, item) => total + parseInt(item.num),
+          0
+        );
+      },
+      deep: true,
+    },
+  },
+};
+</script>
