@@ -30,6 +30,7 @@
                   aria-label="Username"
                   aria-describedby="basic-addon1"
                   v-model="userData.tel"
+                  @input="onInput1Input"
                 />
 
                 <input
@@ -39,6 +40,7 @@
                   aria-label="Username"
                   aria-describedby="basic-addon1"
                   v-model="userData.lastfive"
+                  ref="input2"
                 />
               </div>
               <div class="row mt-4 w-75 card">
@@ -157,24 +159,20 @@
                     class="btn btn-outline-danger btn-close my-auto col-1 me-5"
                     @click="removeClothing(key)"
                   ></button>
-                  <span class="col-2 badge bg-light text-dark fs-6 my-auto">{{
+                  <span class="col-3 badge bg-light text-dark fs-6 my-auto">{{
                     key
                   }}</span>
-                  <div class="col-3 d-flex">
-                    <div class="input-group input-group-sm">
-                      <div class="input-group input-group-sm">
-                        <input
-                          type="number"
-                          class="form-control mb-2"
-                          aria-label="Sizing example input"
-                          aria-describedby="inputGroup-sizing-sm"
-                          v-model="item.num"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <span class="col-2 badge bg-light text-dark fs-6 my-auto"
-                    >數量: {{ item.num }}
+                  <span
+                    class="col-4 badge text-dark fs-6 d-flex align-items-center ms-5"
+                    >數量 :
+                    <input
+                      type="number"
+                      class="form-control ms-3"
+                      aria-label="Sizing example input"
+                      aria-describedby="inputGroup-sizing-sm"
+                      onfocus="this.value=''"
+                      v-model="item.num"
+                    />
                   </span>
                 </li>
                 <li class="d-flex flex-column m-3 pb-3 border-bottom">
@@ -241,7 +239,7 @@ export default {
     getData() {
       let vm = this;
       axios
-        .get("http://localhost:3000/posts")
+        .get("http://localhost:3000/laundry")
         .then((response) => {
           vm.customer = response.data;
           console.log(response.data);
@@ -251,7 +249,7 @@ export default {
     addData() {
       let vm = this;
       axios
-        .post("http://localhost:3000/posts", vm.userData)
+        .post("http://localhost:3000/laundry", vm.userData)
         .then((response) => {
           vm.customer = response.data;
           console.log(response.data);
@@ -279,6 +277,11 @@ export default {
     removeClothing(key) {
       let vm = this;
       vm.$delete(vm.userData.clothing, key);
+    },
+    onInput1Input(event) {
+      if (event.target.value.length >= 5) {
+        this.$refs.input2.focus();
+      }
     },
   },
   watch: {

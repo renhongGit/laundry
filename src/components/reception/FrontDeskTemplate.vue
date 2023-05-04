@@ -5,47 +5,30 @@
       <router-view></router-view>
     </main>
     <!-- 底部 -->
-    <div class="container">
-      <footer
-        class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top"
-      >
-        <div class="col-md-4 d-flex align-items-center">
-          <a
-            href="/"
-            class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1"
-          >
-            <svg class="bi" width="30" height="24">
-              <use xlink:href="#bootstrap" />
-            </svg>
-          </a>
-          <span class="text-muted">&copy; 2022 Company, Inc</span>
-        </div>
 
-        <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
-          <li class="ms-3">
-            <a class="text-muted" href="#"
-              ><svg class="bi" width="24" height="24">
-                <use xlink:href="#twitter" />
-              </svg>
-            </a>
-          </li>
-          <li class="ms-3">
-            <a class="text-muted" href="#"
-              ><svg class="bi" width="24" height="24">
-                <use xlink:href="#instagram" />
-              </svg>
-            </a>
-          </li>
-          <li class="ms-3">
-            <a class="text-muted" href="#"
-              ><svg class="bi" width="24" height="24">
-                <use xlink:href="#facebook" />
-              </svg>
-            </a>
-          </li>
-        </ul>
-      </footer>
-    </div>
+    <footer class="container row mx-auto text-center border-top py-3 my-4">
+      <div class="col">
+        <p>嘉義市西區友愛路190號</p>
+        <p>周一至周六 10:00~22:00</p>
+        <p>國定假日公休</p>
+      </div>
+      <div class="col">
+        <a href="mailto:renhong.f2e@gmail.com">
+          <i class="bi bi-envelope-at fs-3 text m-2"></i
+        ></a>
+        <a href="https://www.facebook.com/laundry6166/?locale=zh_TW">
+          <i class="bi bi-facebook fs-3 text m-2"></i
+        ></a>
+        <a href="tel:+886-5-2337765"
+          ><i class="bi bi-whatsapp fs-3 text m-2"></i
+        ></a>
+      </div>
+      <div class="col">
+        <router-link to="/admin"
+          ><i class="bi bi-wrench fs-5 text m-2">管理</i>
+        </router-link>
+      </div>
+    </footer>
   </div>
 </template>
 

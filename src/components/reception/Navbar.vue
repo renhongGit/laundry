@@ -27,14 +27,17 @@
         </a>
       </router-link>
 
-      <router-link class="py-2 d-none d-md-inline-block" to="/servicelocation">
-        服務位置
+      <router-link
+        class="py-2 d-none d-md-inline-block"
+        to="/laundrysupplies/clean"
+      >
+        洗衣用品
       </router-link>
       <router-link class="py-2 d-none d-md-inline-block" to="/washingstatus">
         送洗狀態
       </router-link>
-      <router-link class="py-2 d-none d-md-inline-block" to="/pricelist">
-        價目表
+      <router-link class="py-2 d-none d-md-inline-block" to="/shopping">
+        購物車
       </router-link>
     </nav>
   </header>

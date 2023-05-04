@@ -4,9 +4,11 @@ import router from "./router";
 
 import "bootstrap";
 import "@/assets/all.scss";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
-import "leaflet/dist/leaflet";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+Vue.prototype.$L = L;
 
 import axios from "axios";
 import VueAxios from "vue-axios";

@@ -2,12 +2,16 @@
   <div>
     <main class="container mx-auto text-center mt-5">
       <input
-        class="form-control form-control-dark w-50 mx-auto"
+        class="form-control form-control-dark mx-auto border"
         type="text"
-        placeholder="請輸入手機末五碼查詢"
+        placeholder="輸入手機末五碼查詢"
         aria-label="Search"
+        style="width: 170px"
+        v-model="searchNumber"
       />
-
+      <button type="button" class="btn btn-primary" @click="find">
+        Primary
+      </button>
       <h2 class="mt-5">送洗進度</h2>
       <h4 class="mt-3">李小姐</h4>
       <div class="table-responsive mt-3">
@@ -17,34 +21,20 @@
               <th scope="col">送洗日期</th>
               <th scope="col">洗滌內容</th>
               <th scope="col">目前進度</th>
-              <th scope="col">付款狀態</th>
               <th scope="col">備註</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody v-for="(item, key) in specifyContent" :key="key">
             <tr>
-              <td>2023/4/16 - 13:23</td>
-              <td>襯衫:3件 , 西裝:1套 , 床組:1組</td>
-              <td>洗滌處理中</td>
-              <td>尚未付款 $550 TWD</td>
+              <td>{{ item.time }}</td>
               <td>
-                襯衫送洗前有破損，<br />西裝送洗前有退色，<br />並已告知顧客，同意送洗。
+                <div v-for="(value, index) in item.clothing" :key="index">
+                  <p>{{ index }} {{ value.num }}</p>
+                </div>
               </td>
-            </tr>
-            <tr>
-              <td>2023/3/19 - 11:20</td>
-              <td>羽絨外套:2件</td>
-              <td>已取件</td>
-              <td>已付款 3/23 - 10:40</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>2023/2/26 - 10:35</td>
-              <td>棉T:6件</td>
-              <td>已取件</td>
-              <td>已付款 3/1 - 15:55</td>
+              <td>{{ item.progress }}</td>
               <td>
-                送洗前已告知污漬只能儘量處理，<br />污漬經處理後有輕微改善。
+                {{ item.remark }}
               </td>
             </tr>
           </tbody>
@@ -53,3 +43,49 @@
     </main>
   </div>
 </template>
+
+<script>
+import axios from "axios";
+export default {
+  data() {
+    return {
+      userData: [],
+      specifyContent: [],
+      searchNumber: "",
+    };
+  },
+  created() {
+    this.getUserData();
+  },
+  methods: {
+    getUserData() {
+      axios
+        .get(`http://localhost:3000/laundry`)
+        .then((response) => {
+          this.userData = response.data;
+          console.log(this.userData);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    find() {
+      let vm = this;
+      vm.switchList = false;
+      switch (true) {
+        case !!vm.searchNumber:
+          vm.specifyContent = vm.userData.filter(
+            (obj) => obj.lastfive == vm.searchNumber
+          );
+          break;
+        default:
+          vm.specifyContent = [];
+      }
+
+      vm.searchNumber = "";
+      console.log(vm.specifyContent);
+      console.log(vm.switchList);
+    },
+  },
+};
+</script>

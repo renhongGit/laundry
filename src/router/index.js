@@ -2,13 +2,20 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import FrontDeskTemplate from "@/components/reception/FrontDeskTemplate.vue";
 import Home from "@/components/reception/Home.vue";
-import ServiceLocation from "@/components/reception/ServiceLocation.vue";
+import LaundrySupplies from "@/components/reception/LaundrySupplies.vue";
+import Clean from "@/components/reception/Clean.vue";
+import Articles from "@/components/reception/Articles.vue";
+import Shopping from "@/components/reception/Shopping.vue";
+import ShoppingEnd from "@/components/reception/ShoppingEnd.vue";
+import Product from "@/components/reception/Product.vue";
+
 import WashingStatus from "@/components/reception/WashingStatus.vue";
-import PriceList from "@/components/reception/PriceList.vue";
 
 import RearTemplate from "@/components/rearend/RearTemplate.vue";
 import Registration from "@/components/rearend/Registration.vue";
 import ProgressQuery from "@/components/rearend/ProgressQuery.vue";
+import Commodity from "@/components/rearend/Commodity.vue";
+import CustomerOrders from "@/components/rearend/CustomerOrders.vue";
 
 Vue.use(VueRouter);
 
@@ -24,9 +31,21 @@ const routes = [
         component: Home,
       },
       {
-        path: "servicelocation",
-        name: "ServiceLocation",
-        component: ServiceLocation,
+        path: "laundrysupplies",
+        name: "LaundrySupplies",
+        component: LaundrySupplies,
+        children: [
+          {
+            path: "clean",
+            name: "Clean",
+            component: Clean,
+          },
+          {
+            path: "articles",
+            name: "Articles",
+            component: Articles,
+          },
+        ],
       },
       {
         path: "washingstatus",
@@ -34,9 +53,19 @@ const routes = [
         component: WashingStatus,
       },
       {
-        path: "pricelist",
-        name: "PriceList",
-        component: PriceList,
+        path: "shopping",
+        name: "Shopping",
+        component: Shopping,
+      },
+      {
+        path: "shoppingend",
+        name: "ShoppingEnd",
+        component: ShoppingEnd,
+      },
+      {
+        path: "/product/:id",
+        name: "product",
+        component: Product,
       },
     ],
   },
@@ -55,6 +84,16 @@ const routes = [
         path: "progressquery",
         name: "ProgressQuery",
         component: ProgressQuery,
+      },
+      {
+        path: "commodity",
+        name: "Commodity",
+        component: Commodity,
+      },
+      {
+        path: "customerorders",
+        name: "CustomerOrders",
+        component: CustomerOrders,
       },
     ],
   },

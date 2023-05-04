@@ -45,6 +45,7 @@
             >
               重新整理
             </button>
+
             <table
               class="table table-striped table-sm mt-4 text-break align-middle"
               v-if="switchList"
@@ -192,7 +193,7 @@ export default {
     getData() {
       let vm = this;
       axios
-        .get("http://localhost:3000/posts")
+        .get("http://localhost:3000/laundry")
         .then((response) => {
           vm.customer = response.data;
           console.log(response.data);
@@ -227,14 +228,14 @@ export default {
       let id = event.currentTarget.dataset.id;
       console.log(id);
       axios
-        .patch(`http://localhost:3000/posts/${id}`, {
+        .patch(`http://localhost:3000/laundry/${id}`, {
           progress: "已完成清洗，待取件。",
         })
         .then((response) => {
           console.log(response);
           // 重新取得資料並更新 specifyContent
           axios
-            .get("http://localhost:3000/posts")
+            .get("http://localhost:3000/laundry")
             .then((response) => {
               vm.customer = response.data;
               vm.specifyContent = vm.customer.filter((obj) => obj.id == id);
@@ -251,14 +252,14 @@ export default {
       let id = event.currentTarget.dataset.id;
       console.log(id);
       axios
-        .patch(`http://localhost:3000/posts/${id}`, {
+        .patch(`http://localhost:3000/laundry/${id}`, {
           progress: "已取件。",
         })
         .then((response) => {
           console.log(response);
           // 重新取得資料並更新 specifyContent
           axios
-            .get("http://localhost:3000/posts")
+            .get("http://localhost:3000/laundry")
             .then((response) => {
               vm.customer = response.data;
               vm.specifyContent = vm.customer.filter((obj) => obj.id == id);
