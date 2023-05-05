@@ -16,6 +16,33 @@
           >
             重新整理
           </button>
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+              <li
+                class="page-item"
+                v-for="page in pages"
+                :key="page"
+                :class="{ active: page === currentPage }"
+              >
+                <a
+                  class="page-link"
+                  href="#"
+                  @click.prevent="setCurrentPage(page)"
+                  >{{ page }}</a
+                >
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
           <div>
             <table class="table">
               <thead>
@@ -26,10 +53,10 @@
                   <th scope="col">訂購商品</th>
                   <th scope="col">付款方式</th>
                   <th scope="col">客戶留言</th>
-                  <th scope="col">完成訂單</th>
+                  <th scope="col">訂單狀態</th>
                 </tr>
               </thead>
-              <tbody v-for="(item, key) in userShopping" :key="key">
+              <tbody v-for="(item, key) in specifyPage" :key="key">
                 <tr>
                   <th scope="row">{{ item.name }} <br />{{ item.time }}</th>
                   <td>{{ item.tel }} <br />{{ item.email }}</td>
@@ -39,15 +66,15 @@
                       class="btn btn-primary btn-sm"
                       type="button"
                       data-bs-toggle="collapse"
-                      data-bs-target="#collapseExample"
+                      :data-bs-target="'#collapseExample-' + key"
                       aria-expanded="false"
-                      aria-controls="collapseExample"
+                      :aria-controls="'collapseExample-' + key"
                     >
                       訂購清單
                     </button>
                     <div
                       class="collapse"
-                      id="collapseExample"
+                      :id="'collapseExample-' + key"
                       v-for="(carItem, index) in item.shoppingCar"
                       :key="index"
                     >
@@ -64,7 +91,9 @@
                   <td>{{ item.pay }}<br />總計 : {{ item.money }} 元</td>
                   <td>{{ item.message }}</td>
                   <td>
+                    <span v-if="item.progress === '完成訂單'">完成訂單</span>
                     <button
+                      v-else
                       type="button"
                       class="btn btn-primary btn-sm"
                       data-bs-toggle="modal"
@@ -108,7 +137,7 @@
                               type="button"
                               class="btn btn-primary"
                               data-bs-dismiss="modal"
-                              @click="removeOrder(item.id)"
+                              @click="completeOrder(item.id)"
                             >
                               YES
                             </button>
@@ -133,10 +162,32 @@ export default {
   data() {
     return {
       userShopping: [],
+      divider: 6,
+      pageSize: 6, // 每頁顯示的數量
+      currentPage: 1, // 當前頁碼
+      specifyPage: [],
     };
   },
   created() {
     this.getUserShopping();
+  },
+  computed: {
+    // 計算總頁數
+    totalPages() {
+      return Math.ceil(this.userShopping.length / this.pageSize);
+    },
+    // 計算要顯示的頁數列表
+    pages() {
+      let start = Math.max(1, this.currentPage - 2);
+      let end = Math.min(start + 4, this.totalPages);
+      let pages = [];
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      return pages;
+    },
   },
   methods: {
     getUserShopping() {
@@ -145,25 +196,40 @@ export default {
         .then((response) => {
           this.userShopping = response.data;
           this.shoppingCar = response.data.shoppingCar;
+          this.pageContent();
         })
         .catch((error) => {
           console.log(error);
         });
     },
-    removeOrder(id) {
+    completeOrder(id) {
       axios
-        .delete(`http://localhost:3000/userShopping/${id}`)
+        .patch(`http://localhost:3000/userShopping/${id}`, {
+          progress: "完成訂單",
+        })
         .then((response) => {
-          this.refreshPage();
+          console.log(id);
           console.log(response);
         })
         .catch((error) => {
           console.log(error);
         });
+      this.refreshPage();
     },
     refreshPage() {
       // 重新載入當前頁面
       this.$router.go(0);
+    },
+    setCurrentPage(page) {
+      this.currentPage = page;
+      this.pageContent();
+      console.log(this.currentPage);
+    },
+    pageContent() {
+      let data = this.userShopping;
+      let currentPage = this.currentPage;
+      this.specifyPage = data.filter((item) => item.page === currentPage);
+      console.log(this.specifyPage);
     },
   },
 };

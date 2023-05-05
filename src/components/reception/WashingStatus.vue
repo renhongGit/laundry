@@ -1,6 +1,7 @@
 <template>
   <div>
     <main class="container mx-auto text-center mt-5">
+      <span class="text-danger">{{ errors.first('searchNumber') }}</span>
       <input
         class="form-control form-control-dark mx-auto border"
         type="text"
@@ -8,7 +9,10 @@
         aria-label="Search"
         style="width: 170px"
         v-model="searchNumber"
+        name="searchNumber"
+        v-validate="'lastfive'"
       />
+     
       <button type="button" class="btn btn-primary" @click="find">
         Primary
       </button>
@@ -46,9 +50,11 @@
 
 <script>
 import axios from "axios";
+
 export default {
   data() {
     return {
+      phone: '',
       userData: [],
       specifyContent: [],
       searchNumber: "",

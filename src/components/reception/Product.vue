@@ -129,12 +129,16 @@ export default {
       axios
         .post("http://localhost:3000/shopping", this.userProduct)
         .then((response) => {
+          this.refreshPage();
           console.log(response.data);
         })
         .catch((error) => {
           console.log(error);
         });
       console.log(this.userProduct);
+    },
+    refreshPage() {
+      this.$router.go(0);
     },
   },
 };

@@ -216,6 +216,8 @@ import axios from "axios";
 export default {
   data() {
     return {
+      divider: 6,
+      customers: [],
       userData: {
         name: "",
         tel: "",
@@ -225,6 +227,7 @@ export default {
         remark: "",
         clothing: {},
         total: 0,
+        page: 1,
       },
     };
   },
@@ -235,13 +238,15 @@ export default {
     const now = new Date();
     this.userData.time = now.toLocaleString();
   },
+
   methods: {
     getData() {
       let vm = this;
       axios
         .get("http://localhost:3000/laundry")
         .then((response) => {
-          vm.customer = response.data;
+          vm.customers = response.data;
+          vm.pageNumber(); // 在新增資料後呼叫 pageNumber 方法更新頁碼
           console.log(response.data);
         })
         .catch((error) => console.log(error));
@@ -254,6 +259,7 @@ export default {
           vm.customer = response.data;
           console.log(response.data);
           vm.clearAll();
+          vm.getData();
         })
         .catch((error) => console.log(error));
     },
@@ -281,6 +287,15 @@ export default {
     onInput1Input(event) {
       if (event.target.value.length >= 5) {
         this.$refs.input2.focus();
+      }
+    },
+    pageNumber() {
+      let len = this.customers.length;
+      console.log(len);
+      if (len === 0) {
+        this.userData.page = 1;
+      } else {
+        this.userData.page = Math.ceil((len + 1) / this.divider);
       }
     },
   },

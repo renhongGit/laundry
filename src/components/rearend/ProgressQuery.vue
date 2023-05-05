@@ -45,11 +45,37 @@
             >
               重新整理
             </button>
-
+            <nav aria-label="Page navigation example">
+              <ul class="pagination">
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                <li
+                  class="page-item"
+                  v-for="page in pages"
+                  :key="page"
+                  :class="{ active: page === currentPage }"
+                >
+                  <a
+                    class="page-link"
+                    href="#"
+                    @click.prevent="setCurrentPage(page)"
+                    >{{ page }}</a
+                  >
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
             <table
               class="table table-striped table-sm mt-4 text-break align-middle"
               v-if="switchList"
-              v-for="(item, key) in customer"
+              v-for="(item, key) in specifyPage"
               :key="key"
             >
               <thead>
@@ -180,7 +206,10 @@ export default {
       searchNumber: "",
       searchName: "",
       specifyContent: [],
+      specifyPage: [],
       switchList: true,
+      pageSize: 6, // 每頁顯示的數量
+      currentPage: 1, // 當前頁碼
     };
   },
   created() {
@@ -188,6 +217,24 @@ export default {
   },
   mounted() {
     this.getData();
+  },
+  computed: {
+    // 計算總頁數
+    totalPages() {
+      return Math.ceil(this.customer.length / this.pageSize);
+    },
+    // 計算要顯示的頁數列表
+    pages() {
+      let start = Math.max(1, this.currentPage - 2);
+      let end = Math.min(start + 4, this.totalPages);
+      let pages = [];
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      return pages;
+    },
   },
   methods: {
     getData() {
@@ -197,6 +244,7 @@ export default {
         .then((response) => {
           vm.customer = response.data;
           console.log(response.data);
+          this.pageContent();
         })
         .catch((error) => console.log(error));
     },
@@ -234,11 +282,13 @@ export default {
         .then((response) => {
           console.log(response);
           // 重新取得資料並更新 specifyContent
+
           axios
             .get("http://localhost:3000/laundry")
             .then((response) => {
               vm.customer = response.data;
               vm.specifyContent = vm.customer.filter((obj) => obj.id == id);
+              vm.pageContent();
               console.log(specifyContent);
             })
             .catch((error) => console.log(error));
@@ -263,6 +313,7 @@ export default {
             .then((response) => {
               vm.customer = response.data;
               vm.specifyContent = vm.customer.filter((obj) => obj.id == id);
+              vm.pageContent();
             })
             .catch((error) => console.log(error));
         })
@@ -271,8 +322,18 @@ export default {
         });
     },
     refreshPage() {
-      // 重新載入當前頁面
       this.$router.go(0);
+    },
+    setCurrentPage(page) {
+      this.currentPage = page;
+      this.pageContent();
+      console.log(this.currentPage);
+    },
+    pageContent() {
+      let data = this.customer;
+      let currentPage = this.currentPage;
+      this.specifyPage = data.filter((item) => item.page === currentPage);
+      console.log(this.specifyPage);
     },
   },
 };

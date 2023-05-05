@@ -18,6 +18,33 @@
           >
             新增商品
           </button>
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+              <li
+                class="page-item"
+                v-for="page in pages"
+                :key="page"
+                :class="{ active: page === currentPage }"
+              >
+                <a
+                  class="page-link"
+                  href="#"
+                  @click.prevent="setCurrentPage(page)"
+                  >{{ page }}</a
+                >
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
           <div>
             <table class="table">
               <thead>
@@ -30,7 +57,7 @@
                   <th scope="col">編輯</th>
                 </tr>
               </thead>
-              <tbody v-for="(item, key) in productData" :key="key">
+              <tbody v-for="(item, key) in specifyPage" :key="key">
                 <tr>
                   <th scope="row">{{ item.sort }}</th>
                   <td>{{ item.title }}</td>
@@ -411,7 +438,11 @@ import axios from "axios";
 export default {
   data() {
     return {
+      divider: 6,
+      pageSize: 6, // 每頁顯示的數量
+      currentPage: 1, // 當前頁碼
       productData: [],
+      specifyPage: [],
       onlyData: [],
       addProduct: {
         img: "",
@@ -423,11 +454,30 @@ export default {
         description: "",
         content: "",
         is_enabled: "",
+        page: 1,
       },
     };
   },
   created() {
     this.getData();
+  },
+  computed: {
+    // 計算總頁數
+    totalPages() {
+      return Math.ceil(this.productData.length / this.pageSize);
+    },
+    // 計算要顯示的頁數列表
+    pages() {
+      let start = Math.max(1, this.currentPage - 2);
+      let end = Math.min(start + 4, this.totalPages);
+      let pages = [];
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      return pages;
+    },
   },
   methods: {
     getData() {
@@ -436,12 +486,15 @@ export default {
         .get("http://localhost:3000/Commodity")
         .then((response) => {
           vm.productData = response.data;
+          vm.pageContent();
+          vm.pageNumber(); // 在這裡呼叫 pageNumber() 函式
           console.log(vm.productData);
         })
         .catch((error) => console.log(error));
     },
     addData() {
       let vm = this;
+      vm.pageNumber();
       axios
         .post("http://localhost:3000/Commodity", vm.addProduct)
         .then((response) => {
@@ -493,6 +546,26 @@ export default {
         content: "",
         is_enabled: "",
       };
+    },
+    pageNumber() {
+      let len = this.productData.length;
+      console.log(len);
+      if (len === 0) {
+        this.addProduct.page = 1;
+      } else {
+        this.addProduct.page = Math.ceil((len + 1) / this.divider);
+      }
+    },
+    setCurrentPage(page) {
+      this.currentPage = page;
+      this.pageContent();
+      console.log(this.currentPage);
+    },
+    pageContent() {
+      let data = this.productData;
+      let currentPage = this.currentPage;
+      this.specifyPage = data.filter((item) => item.page === currentPage);
+      console.log(this.specifyPage);
     },
   },
 };
