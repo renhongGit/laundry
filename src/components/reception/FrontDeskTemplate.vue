@@ -24,8 +24,8 @@
         ></a>
       </div>
       <div class="col">
-        <router-link to="/admin"
-          ><i class="bi bi-wrench fs-5 text m-2">管理</i>
+        <router-link to="/signin"
+          ><i class="bi bi-wrench fs-5 text m-2"></i>
         </router-link>
       </div>
     </footer>

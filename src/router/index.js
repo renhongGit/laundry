@@ -11,6 +11,7 @@ import Product from "@/components/reception/Product.vue";
 import QA from "@/components/reception/QA.vue";
 import WashingStatus from "@/components/reception/WashingStatus.vue";
 
+import Signin from "@/components/rearend/Signin.vue"
 import RearTemplate from "@/components/rearend/RearTemplate.vue";
 import Registration from "@/components/rearend/Registration.vue";
 import ProgressQuery from "@/components/rearend/ProgressQuery.vue";
@@ -20,6 +21,10 @@ import CustomerOrders from "@/components/rearend/CustomerOrders.vue";
 Vue.use(VueRouter);
 
 const routes = [
+  {
+    path: "*",
+    redirect:'home'
+  },
   {
     path: "/",
     name: "FrontDeskTemplate",
@@ -74,11 +79,17 @@ const routes = [
       },
     ],
   },
-
+  {
+    path: "/signin",
+    name: "Signin",
+    component: Signin,
+  },
+ 
   {
     path: "/admin",
     name: "RearTemplate",
     component: RearTemplate,
+    meta: { requiresAuth: true },
     children: [
       {
         path: "registration",
