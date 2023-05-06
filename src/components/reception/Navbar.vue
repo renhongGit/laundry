@@ -36,8 +36,8 @@
       <router-link class="py-2 d-none d-md-inline-block" to="/washingstatus">
         送洗狀態
       </router-link>
-      <router-link class="py-2 d-none d-md-inline-block" to="/shopping">
-        購物車
+      <router-link class="py-2 d-none d-md-inline-block" to="/QA">
+        Q&A
       </router-link>
     </nav>
   </header>

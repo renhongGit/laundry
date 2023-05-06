@@ -10,12 +10,15 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 Vue.prototype.$L = L;
 
+import validators from '@/utils/validators.js';//自訂驗證規則
 import VeeValidate, { Validator } from "vee-validate"; //匯入檔案
+
 import TW from "vee-validate/dist/locale/zh_TW"; //匯入語言包
 Vue.use(VeeValidate); //啟用API
 Validator.localize("zh-TW", TW); //啟用語言包
-
-
+Object.keys(validators).forEach((rule) => {
+  VeeValidate.Validator.extend(rule, validators[rule]);
+});
 import axios from "axios";
 import VueAxios from "vue-axios";
 Vue.use(VueAxios, axios);
@@ -29,9 +32,3 @@ new Vue({
 }).$mount("#app");
 
 
-VeeValidate.Validator.extend('lastfive', {
-  getMessage: () => '請其供手機末五碼',
-  validate: value => {
-    return value.length === 5 
-  }
-});

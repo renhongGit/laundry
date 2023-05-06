@@ -5,33 +5,53 @@
       <div class="col">
         <div class="mb-3">
           <label for="exampleFormControlInput1" class="form-label">姓名 </label>
+
           <input
-            type="name"
-            class="form-control"
+            type="text"
+            name="name"
+            class="form-control mb-2"
             id="exampleFormControlInput1"
             placeholder="請輸入姓名"
             v-model="user.name"
+            v-validate="{ required: true, nameRules: true }"
+            data-vv-as="姓名"
           />
+          <span class="text-danger" v-show="errors.has('name')">{{
+            errors.first("name")
+          }}</span>
         </div>
+
         <div class="mb-3">
-          <label for="exampleFormControlInput1" class="form-label">電話 </label>
+          <label for="exampleFormControlInput1" class="form-label">手機 </label>
           <input
             type="tel"
-            class="form-control"
+            name="tel"
+            class="form-control mb-2"
             id="exampleFormControlInput1"
-            placeholder="請輸入電話號碼"
+            placeholder="請輸入手機號碼"
             v-model="user.tel"
+            v-validate="{ required: true, telRules: true }"
+            data-vv-as="手機"
           />
+          <span class="text-danger" v-show="errors.has('tel')">{{
+            errors.first("tel")
+          }}</span>
         </div>
         <div class="mb-3">
           <label for="exampleFormControlInput1" class="form-label">地址 </label>
           <input
             type="text"
-            class="form-control"
+            name="address"
+            class="form-control mb-2"
             id="exampleFormControlInput1"
             placeholder="請輸入地址"
             v-model="user.address"
+            v-validate="{ required: true, addressRules: true }"
+            data-vv-as="地址"
           />
+          <span class="text-danger" v-show="errors.has('address')">{{
+            errors.first("address")
+          }}</span>
         </div>
         <div class="mb-3">
           <label for="exampleFormControlInput1" class="form-label"
@@ -39,11 +59,17 @@
           </label>
           <input
             type="email"
-            class="form-control"
+            name="email"
+            class="form-control mb-2"
             id="exampleFormControlInput1"
             placeholder="name@example.com"
             v-model="user.email"
+            v-validate="'required|email'"
+            data-vv-as="Email"
           />
+          <span class="text-danger" v-show="errors.has('email')">{{
+            errors.first("email")
+          }}</span>
         </div>
         <div class="mb-3">
           <label for="exampleFormControlInput1" class="form-label"
@@ -54,23 +80,35 @@
             name="fruit"
             class="form-control"
             v-model="user.pay"
+            v-validate="'required'"
+            data-vv-as="請選其中一個方式付款"
           >
             <option value="ATM">ATM</option>
             <option value="WebATM">WebATM</option>
             <option value="ApplePay">ApplePay</option>
             <option value="GooglePay">GooglePay</option>
           </select>
+          <span class="text-danger" v-show="errors.has('fruit')">{{
+            errors.first("fruit")
+          }}</span>
         </div>
         <div class="mb-3">
           <label for="exampleFormControlTextarea1" class="form-label"
-            >Example textarea</label
+            >留言給我們</label
           >
           <textarea
-            class="form-control"
+            name="message"
+            class="form-control mb-2"
             id="exampleFormControlTextarea1"
-            rows="3"
+            rows="2"
+            maxlength="26"
             v-model="user.message"
+            v-validate="{ messageRules: true }"
+            data-vv-as="留言"
           ></textarea>
+          <span class="text-danger" v-show="errors.has('message')">{{
+            errors.first("message")
+          }}</span>
         </div>
         <button type="button" class="btn btn-primary w-100" @click="checkout()">
           結帳
@@ -176,17 +214,37 @@ export default {
         .catch((error) => console.log(error));
     },
     checkout() {
-      axios
-        .post("http://localhost:3000/userShopping", this.user)
-        .then((response) => {
-          console.log(response.data);
-          // 將路由導向到 "/shoppingend"
-          this.$router.push("/shoppingend");
-          this.getData();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      this.$validator.validateAll().then((result) => {
+        if (result) {
+          // 表單驗證成功
+          this.isProcessing = true; // 顯示 loading 畫面或禁用按鈕
+          axios
+            .post("http://localhost:3000/userShopping", this.user)
+            .then((response) => {
+              console.log(response.data);
+              this.$router.push("/shoppingend");
+              this.getData();
+            })
+            .catch((error) => {
+              console.error(error);
+              alert("系統錯誤，請稍後再試");
+            })
+            .finally(() => {
+              this.isProcessing = false; // 隱藏 loading 畫面或啟用按鈕
+            });
+        } else {
+          // 表單驗證失敗
+          this.$nextTick(() => {
+            // 清空錯誤訊息
+            this.$refs.form.reset();
+            // 顯示所有錯誤訊息
+            const errors = this.$validator.errors.items.map(
+              (item) => `${item.field} ${item.msg}`
+            );
+            alert(`請檢查您的輸入是否正確：\n${errors.join("\n")}`);
+          });
+        }
+      });
     },
     pageNumber() {
       let len = this.userData.length;

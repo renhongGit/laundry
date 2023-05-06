@@ -1,7 +1,9 @@
 <template>
   <div>
     <main class="container mx-auto text-center mt-5">
-      <span class="text-danger">{{ errors.first('searchNumber') }}</span>
+      <span class="text-danger" v-show="errors.has('searchNumber')">{{
+        errors.first("searchNumber")
+      }}</span>
       <input
         class="form-control form-control-dark mx-auto border"
         type="text"
@@ -10,10 +12,11 @@
         style="width: 170px"
         v-model="searchNumber"
         name="searchNumber"
-        v-validate="'lastfive'"
+        v-validate="{ lastfive: true }"
+        data-vv-as="末五碼"
+        maxlength="5"
       />
-     
-      <button type="button" class="btn btn-primary" @click="find">
+      <button type="button" class="btn btn-primary mt-3" @click="find">
         Primary
       </button>
       <h2 class="mt-5">送洗進度</h2>
@@ -54,7 +57,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      phone: '',
+      phone: "",
       userData: [],
       specifyContent: [],
       searchNumber: "",
@@ -76,21 +79,37 @@ export default {
         });
     },
     find() {
-      let vm = this;
-      vm.switchList = false;
-      switch (true) {
-        case !!vm.searchNumber:
-          vm.specifyContent = vm.userData.filter(
-            (obj) => obj.lastfive == vm.searchNumber
-          );
-          break;
-        default:
-          vm.specifyContent = [];
-      }
+      this.$validator.validateAll().then((result) => {
+        if (result) {
+          // 表單驗證成功
+          let vm = this;
+          vm.switchList = false;
+          switch (true) {
+            case !!vm.searchNumber:
+              vm.specifyContent = vm.userData.filter(
+                (obj) => obj.lastfive == vm.searchNumber
+              );
+              break;
+            default:
+              vm.specifyContent = [];
+          }
 
-      vm.searchNumber = "";
-      console.log(vm.specifyContent);
-      console.log(vm.switchList);
+          vm.searchNumber = "";
+          console.log(vm.specifyContent);
+          console.log(vm.switchList);
+        } else {
+          // 表單驗證失敗
+          this.$nextTick(() => {
+            // 清空錯誤訊息
+            this.$refs.form.reset();
+            // 顯示所有錯誤訊息
+            const errors = this.$validator.errors.items.map(
+              (item) => `${item.field} ${item.msg}`
+            );
+            alert(`請檢查您的輸入是否正確：\n${errors.join("\n")}`);
+          });
+        }
+      });
     },
   },
 };

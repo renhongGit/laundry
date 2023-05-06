@@ -14,34 +14,58 @@
             <!-- 左側欄位-->
             <div class="container w-50">
               <div class="row w-75">
-                <input
-                  type="text"
-                  class="form-control col me-4 text-center"
-                  placeholder="請輸入姓名"
-                  aria-label="Username"
-                  aria-describedby="basic-addon1"
-                  v-model="userData.name"
-                />
+                <form>
+                  <input
+                    type="text"
+                    name="name"
+                    class="form-control col me-4 text-center"
+                    placeholder="請輸入姓名"
+                    aria-label="Username"
+                    aria-describedby="basic-addon1"
+                    v-model="userData.name"
+                    v-validate="{ required: true, nameRules: true }"
+                    data-vv-as="姓名"
+                  />
+                  <span class="text-danger" v-show="errors.has('name')">{{
+                    errors.first("name")
+                  }}</span>
 
-                <input
-                  type="text"
-                  class="form-control col me-1"
-                  placeholder="連絡電話"
-                  aria-label="Username"
-                  aria-describedby="basic-addon1"
-                  v-model="userData.tel"
-                  @input="onInput1Input"
-                />
+                  <input
+                    type="text"
+                    name="firstFive"
+                    class="form-control col me-1"
+                    placeholder="09876"
+                    aria-label="firstFive"
+                    aria-describedby="basic-addon1"
+                    v-model="userData.tel"
+                    @input="onInput1Input"
+                    v-validate="'required'"
+                    data-vv-as="手機前五碼"
+                    minlength="5"
+                    maxlength="5"
+                  />
+                  <span class="text-danger" v-show="errors.has('firstFive')">{{
+                    errors.first("firstFive")
+                  }}</span>
 
-                <input
-                  type="text"
-                  class="form-control col"
-                  placeholder="末五碼"
-                  aria-label="Username"
-                  aria-describedby="basic-addon1"
-                  v-model="userData.lastfive"
-                  ref="input2"
-                />
+                  <input
+                    type="text"
+                    name="lastfive"
+                    class="form-control col"
+                    placeholder="54321"
+                    aria-label="lastfive"
+                    aria-describedby="basic-addon1"
+                    v-model="userData.lastfive"
+                    ref="input2"
+                    v-validate="'required'"
+                    data-vv-as="末五碼"
+                    maxlength="5"
+                    minlength="5"
+                  />
+                  <span class="text-danger" v-show="errors.has('lastfive')">{{
+                    errors.first("lastfive")
+                  }}</span>
+                </form>
               </div>
               <div class="row mt-4 w-75 card">
                 <div class="card card-body">
@@ -180,6 +204,7 @@
                     class="form-control"
                     aria-label="With textarea"
                     v-model="userData.remark"
+                    maxlength="30"
                   ></textarea>
                 </li>
                 <li class="d-flex justify-content-between">
@@ -253,15 +278,36 @@ export default {
     },
     addData() {
       let vm = this;
-      axios
-        .post("http://localhost:3000/laundry", vm.userData)
-        .then((response) => {
-          vm.customer = response.data;
-          console.log(response.data);
-          vm.clearAll();
-          vm.getData();
-        })
-        .catch((error) => console.log(error));
+
+      this.$validator.validateAll().then((result) => {
+        if (result) {
+          // 表單驗證成功
+
+          axios
+            .post("http://localhost:3000/laundry", vm.userData)
+            .then((response) => {
+              vm.customer = response.data;
+              console.log(response.data);
+              vm.clearAll();
+              vm.getData();
+
+              // 清空錯誤訊息
+              this.$nextTick(() => {
+                this.$validator.reset();
+              });
+            })
+            .catch((error) => console.log(error));
+        } else {
+          // 表單驗證失敗
+          this.$nextTick(() => {
+            // 顯示所有錯誤訊息
+            const errors = this.$validator.errors.items.map(
+              (item) => `${item.field} ${item.msg}`
+            );
+            alert(`請檢查您的輸入是否正確：\n${errors.join("\n")}`);
+          });
+        }
+      });
     },
     addNewClothing(val) {
       let vm = this;

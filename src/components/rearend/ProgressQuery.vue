@@ -14,21 +14,36 @@
             <span class="input-group-text mt-1 w-25 mx-auto"
               >輸入姓名 或 手機末五碼查詢</span
             >
+            <span class="text-danger" v-show="errors.has('name')">{{
+              errors.first("name")
+            }}</span>
+            <span class="text-danger" v-show="errors.has('searchNumber')">{{
+              errors.first("searchNumber")
+            }}</span>
             <div class="w-25 input-group m-3 mx-auto">
               <input
                 type="text"
+                name="name"
                 class="form-control"
                 placeholder="姓名"
                 aria-describedby="button-addon2"
                 v-model="searchName"
+                v-validate="{ nameRules: true }"
+                data-vv-as="姓名"
               />
+
               <input
                 type="text"
+                name="searchNumber"
                 class="form-control w-25"
                 placeholder="手機末五碼"
                 aria-describedby="button-addon2"
                 v-model="searchNumber"
+                v-validate="{ lastfive: true }"
+                data-vv-as="末五碼"
+                maxlength="5"
               />
+
               <button
                 class="btn btn-outline-secondary"
                 type="button"
@@ -250,26 +265,42 @@ export default {
     },
     find() {
       let vm = this;
-      vm.switchList = false;
-      switch (true) {
-        case !!vm.searchNumber:
-          vm.specifyContent = vm.customer.filter(
-            (obj) => obj.lastfive == vm.searchNumber
-          );
-          break;
-        case !!vm.searchName:
-          vm.specifyContent = vm.customer.filter(
-            (obj) => obj.name == vm.searchName
-          );
-          break;
-        default:
-          vm.specifyContent = [];
-      }
 
-      vm.searchNumber = "";
-      vm.searchName = "";
-      console.log(vm.specifyContent);
-      console.log(vm.switchList);
+      this.$validator.validateAll().then((result) => {
+        if (result) {
+          // 表單驗證成功
+
+          vm.switchList = false;
+          switch (true) {
+            case !!vm.searchNumber:
+              vm.specifyContent = vm.customer.filter(
+                (obj) => obj.lastfive == vm.searchNumber
+              );
+              break;
+            case !!vm.searchName:
+              vm.specifyContent = vm.customer.filter(
+                (obj) => obj.name == vm.searchName
+              );
+              break;
+            default:
+              vm.specifyContent = [];
+          }
+
+          vm.searchNumber = "";
+          vm.searchName = "";
+          console.log(vm.specifyContent);
+          console.log(vm.switchList);
+        } else {
+          // 表單驗證失敗
+          this.$nextTick(() => {
+            // 顯示所有錯誤訊息
+            const errors = this.$validator.errors.items.map(
+              (item) => `${item.field} ${item.msg}`
+            );
+            alert(`請檢查您的輸入是否正確：\n${errors.join("\n")}`);
+          });
+        }
+      });
     },
     completeCleaning(event) {
       let vm = this;

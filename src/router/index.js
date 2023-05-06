@@ -8,7 +8,7 @@ import Articles from "@/components/reception/Articles.vue";
 import Shopping from "@/components/reception/Shopping.vue";
 import ShoppingEnd from "@/components/reception/ShoppingEnd.vue";
 import Product from "@/components/reception/Product.vue";
-
+import QA from "@/components/reception/QA.vue";
 import WashingStatus from "@/components/reception/WashingStatus.vue";
 
 import RearTemplate from "@/components/rearend/RearTemplate.vue";
@@ -66,6 +66,11 @@ const routes = [
         path: "/product/:id",
         name: "product",
         component: Product,
+      },
+      {
+        path: "/QA",
+        name: "QA",
+        component: QA,
       },
     ],
   },
