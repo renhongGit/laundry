@@ -1,5 +1,7 @@
 <template>
   <div>
+    <loading :active.sync="isLoading"></loading>
+
     <div class="container-fluid">
       <div class="row">
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
@@ -18,8 +20,13 @@
           </button>
           <nav aria-label="Page navigation example">
             <ul class="pagination">
-              <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
+              <li class="page-item" v-if="currentPage > 1">
+                <a
+                  class="page-link"
+                  href="#"
+                  aria-label="Previous"
+                  @click.prevent="setCurrentPage(currentPage - 1)"
+                >
                   <span aria-hidden="true">&laquo;</span>
                 </a>
               </li>
@@ -36,8 +43,13 @@
                   >{{ page }}</a
                 >
               </li>
-              <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
+              <li class="page-item" v-if="currentPage < totalPages">
+                <a
+                  class="page-link"
+                  href="#"
+                  aria-label="Next"
+                  @click.prevent="setCurrentPage(currentPage + 1)"
+                >
                   <span aria-hidden="true">&raquo;</span>
                 </a>
               </li>
@@ -161,6 +173,7 @@ import axios from "axios";
 export default {
   data() {
     return {
+      isLoading: false,
       userShopping: [],
       divider: 6,
       pageSize: 6, // 每頁顯示的數量
@@ -191,12 +204,15 @@ export default {
   },
   methods: {
     getUserShopping() {
+      let vm = this;
+      vm.isLoading = true;
       axios
-        .get(`http://localhost:3000/userShopping`)
+        .get(`${process.env.VUE_APP_MYAPI}/userShopping`)
         .then((response) => {
-          this.userShopping = response.data;
-          this.shoppingCar = response.data.shoppingCar;
-          this.pageContent();
+          vm.userShopping = response.data;
+          vm.shoppingCar = response.data.shoppingCar;
+          vm.isLoading = false;
+          vm.pageContent();
         })
         .catch((error) => {
           console.log(error);
@@ -204,7 +220,7 @@ export default {
     },
     completeOrder(id) {
       axios
-        .patch(`http://localhost:3000/userShopping/${id}`, {
+        .patch(`${process.env.VUE_APP_MYAPI}/userShopping/${id}`, {
           progress: "完成訂單",
         })
         .then((response) => {
@@ -217,19 +233,17 @@ export default {
       this.refreshPage();
     },
     refreshPage() {
-      // 重新載入當前頁面
       this.$router.go(0);
     },
     setCurrentPage(page) {
       this.currentPage = page;
       this.pageContent();
-      console.log(this.currentPage);
     },
     pageContent() {
-      let data = this.userShopping;
-      let currentPage = this.currentPage;
-      this.specifyPage = data.filter((item) => item.page === currentPage);
-      console.log(this.specifyPage);
+      let vm = this;
+      let data = vm.userShopping;
+      let currentPage = vm.currentPage;
+      vm.specifyPage = data.filter((item) => item.page === currentPage);
     },
   },
 };

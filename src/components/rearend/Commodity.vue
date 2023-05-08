@@ -1,5 +1,7 @@
 <template>
   <div>
+    <loading :active.sync="isLoading"></loading>
+
     <div class="container-fluid">
       <div class="row">
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
@@ -11,7 +13,7 @@
           </div>
           <button
             type="button"
-            class="btn btn-primary"
+            class="btn btn-primary mb-2"
             data-bs-toggle="modal"
             data-bs-target="#exampleModal"
             @click="clearAddProduct"
@@ -20,8 +22,13 @@
           </button>
           <nav aria-label="Page navigation example">
             <ul class="pagination">
-              <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
+              <li class="page-item" v-if="currentPage > 1">
+                <a
+                  class="page-link"
+                  href="#"
+                  aria-label="Previous"
+                  @click.prevent="setCurrentPage(currentPage - 1)"
+                >
                   <span aria-hidden="true">&laquo;</span>
                 </a>
               </li>
@@ -38,8 +45,13 @@
                   >{{ page }}</a
                 >
               </li>
-              <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
+              <li class="page-item" v-if="currentPage < totalPages">
+                <a
+                  class="page-link"
+                  href="#"
+                  aria-label="Next"
+                  @click.prevent="setCurrentPage(currentPage + 1)"
+                >
                   <span aria-hidden="true">&raquo;</span>
                 </a>
               </li>
@@ -72,7 +84,7 @@
                   <td>
                     <button
                       type="button"
-                      class="btn btn-primary"
+                      class="btn btn-primary me-2"
                       data-bs-toggle="modal"
                       data-bs-target="#exampleModal-2"
                       @click="openData(item.id)"
@@ -438,6 +450,7 @@ import axios from "axios";
 export default {
   data() {
     return {
+      isLoading: false,
       divider: 6,
       pageSize: 6, // 每頁顯示的數量
       currentPage: 1, // 當前頁碼
@@ -482,13 +495,14 @@ export default {
   methods: {
     getData() {
       let vm = this;
+      vm.isLoading = true;
       axios
-        .get("http://localhost:3000/Commodity")
+        .get(`${process.env.VUE_APP_MYAPI}/Commodity`)
         .then((response) => {
           vm.productData = response.data;
+          vm.isLoading = false;
           vm.pageContent();
-          vm.pageNumber(); // 在這裡呼叫 pageNumber() 函式
-          console.log(vm.productData);
+          vm.pageNumber();
         })
         .catch((error) => console.log(error));
     },
@@ -496,7 +510,7 @@ export default {
       let vm = this;
       vm.pageNumber();
       axios
-        .post("http://localhost:3000/Commodity", vm.addProduct)
+        .post(`${process.env.VUE_APP_MYAPI}/Commodity`, vm.addProduct)
         .then((response) => {
           vm.getData();
           console.log(response.data);
@@ -506,28 +520,26 @@ export default {
     deleteData(id) {
       let vm = this;
       axios
-        .delete(`http://localhost:3000/Commodity/${id}`)
+        .delete(`${process.env.VUE_APP_MYAPI}/Commodity/${id}`)
         .then((response) => {
           vm.productData = response.data;
           vm.getData();
-          console.log(vm.productData);
         })
         .catch((error) => console.log(error));
     },
     openData(id) {
       let vm = this;
       axios
-        .get(`http://localhost:3000/Commodity/${id}`)
+        .get(`${process.env.VUE_APP_MYAPI}/Commodity/${id}`)
         .then((response) => {
           vm.onlyData = response.data;
-          console.log(vm.onlyData);
         })
         .catch((error) => console.log(error));
     },
     updateData(id) {
       let vm = this;
       axios
-        .put(`http://localhost:3000/Commodity/${id}`, vm.onlyData)
+        .put(`${process.env.VUE_APP_MYAPI}/Commodity/${id}`, vm.onlyData)
         .then((response) => {
           vm.onlyData = response.data;
           vm.getData();
@@ -549,7 +561,6 @@ export default {
     },
     pageNumber() {
       let len = this.productData.length;
-      console.log(len);
       if (len === 0) {
         this.addProduct.page = 1;
       } else {
@@ -559,13 +570,11 @@ export default {
     setCurrentPage(page) {
       this.currentPage = page;
       this.pageContent();
-      console.log(this.currentPage);
     },
     pageContent() {
       let data = this.productData;
       let currentPage = this.currentPage;
       this.specifyPage = data.filter((item) => item.page === currentPage);
-      console.log(this.specifyPage);
     },
   },
 };

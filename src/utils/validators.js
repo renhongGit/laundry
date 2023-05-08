@@ -6,7 +6,7 @@ const customRules = {
       const isValidLength = value.trim().length >= 2 && value.trim().length <= 4; // 確認字元數是否在 2 到 4 之間
       return regex.test(value) && !hasMrOrMs && isValidLength;
     },
-    getMessage: field => `${field} 格式不符合要求，請輸入 2 到 4 個中文字，且不含先生或小姐`,
+    getMessage: field => `${field}格式不符，請輸入 2~4 個中文字，不含先生或小姐`,
   },
   telRules: {
     validate: value => {
@@ -38,7 +38,7 @@ const customRules = {
       return /^[0-9]+$/.test(value) && value.length >= 5;
     },
     getMessage: (field) => {
-      return `${field} 請輸入數字`;
+      return `${field} 請輸入數字，長度須達5個數字`;
     },
   },
 };

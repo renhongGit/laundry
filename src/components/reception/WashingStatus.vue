@@ -13,18 +13,18 @@
         v-model="searchNumber"
         name="searchNumber"
         v-validate="{ lastfive: true }"
-        data-vv-as="末五碼"
+        data-vv-as="查詢欄位"
         maxlength="5"
       />
       <button type="button" class="btn btn-primary mt-3" @click="find">
-        Primary
+        查詢
       </button>
       <h2 class="mt-5">送洗進度</h2>
-      <h4 class="mt-3">李小姐</h4>
       <div class="table-responsive mt-3">
         <table class="table table-striped table-sm align-middle">
           <thead>
             <tr>
+              <th scope="col">姓名</th>
               <th scope="col">送洗日期</th>
               <th scope="col">洗滌內容</th>
               <th scope="col">目前進度</th>
@@ -33,6 +33,7 @@
           </thead>
           <tbody v-for="(item, key) in specifyContent" :key="key">
             <tr>
+              <td>{{ item.name }}</td>
               <td>{{ item.time }}</td>
               <td>
                 <div v-for="(value, index) in item.clothing" :key="index">
@@ -69,10 +70,9 @@ export default {
   methods: {
     getUserData() {
       axios
-        .get(`http://localhost:3000/laundry`)
+        .get(`${process.env.VUE_APP_MYAPI}/laundry`)
         .then((response) => {
           this.userData = response.data;
-          console.log(this.userData);
         })
         .catch((error) => {
           console.log(error);
@@ -95,7 +95,6 @@ export default {
           }
 
           vm.searchNumber = "";
-          console.log(vm.specifyContent);
           console.log(vm.switchList);
         } else {
           // 表單驗證失敗

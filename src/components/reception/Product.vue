@@ -96,8 +96,6 @@ export default {
       .get(`http://localhost:3000/Commodity/${this.$route.params.id}`)
       .then((response) => {
         this.product = response.data;
-        console.log(this.product);
-        console.log(this.userShoppingData);
       })
       .catch((error) => console.log(error));
   },
@@ -135,7 +133,6 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-      console.log(this.userProduct);
     },
     refreshPage() {
       this.$router.go(0);

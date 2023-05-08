@@ -19,6 +19,10 @@ Object.keys(validators).forEach((rule) => { //啟用自訂規則
   VeeValidate.Validator.extend(rule, validators[rule]);
 });
 
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
+Vue.component('Loading',Loading)
+
 import axios from "axios";
 import VueAxios from "vue-axios";
 Vue.use(VueAxios, axios);

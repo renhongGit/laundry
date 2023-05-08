@@ -1,5 +1,7 @@
 <template>
   <div class="container">
+    <loading :active.sync="isLoading"></loading>
+
     <div class="d-flex flex-wrap">
       <div class="commodity m-1" v-for="(item, key) in productData" :key="key">
         <router-link
@@ -61,6 +63,7 @@ import axios from "axios";
 export default {
   data() {
     return {
+      isLoading: false,
       productData: [],
     };
   },
@@ -71,13 +74,14 @@ export default {
   methods: {
     getData() {
       let vm = this;
+      vm.isLoading = true;
       axios
-        .get("http://localhost:3000/Commodity")
+        .get(`${process.env.VUE_APP_MYAPI}/Commodity`)
         .then((response) => {
           vm.productData = response.data.filter(
             (item) => item.sort === "衣物用具" && item.is_enabled !== 0
           );
-          console.log(vm.productData);
+          vm.isLoading = false;
         })
         .catch((error) => console.log(error));
     },

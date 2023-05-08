@@ -1,5 +1,6 @@
 <template>
   <div>
+    <loading :active.sync="isLoading"></loading>
     <div class="container-fluid">
       <div class="row">
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
@@ -18,7 +19,7 @@
                   <input
                     type="text"
                     name="name"
-                    class="form-control col me-4 text-center"
+                    class="form-control col me-4 mb-2 text-center"
                     placeholder="請輸入姓名"
                     aria-label="Username"
                     aria-describedby="basic-addon1"
@@ -29,39 +30,40 @@
                   <span class="text-danger" v-show="errors.has('name')">{{
                     errors.first("name")
                   }}</span>
-
-                  <input
-                    type="text"
-                    name="firstFive"
-                    class="form-control col me-1"
-                    placeholder="09876"
-                    aria-label="firstFive"
-                    aria-describedby="basic-addon1"
-                    v-model="userData.tel"
-                    @input="onInput1Input"
-                    v-validate="'required'"
-                    data-vv-as="手機前五碼"
-                    minlength="5"
-                    maxlength="5"
-                  />
+                  <div class="d-flex mb-2">
+                    <input
+                      type="text"
+                      name="firstFive"
+                      class="form-control col me-1 text-center"
+                      placeholder="09876"
+                      aria-label="firstFive"
+                      aria-describedby="basic-addon1"
+                      v-model="userData.tel"
+                      @input="onInput1Input"
+                      v-validate="'required'"
+                      data-vv-as="手機前五碼"
+                      minlength="5"
+                      maxlength="5"
+                    />
+                    <input
+                      type="text"
+                      name="lastfive"
+                      class="form-control col text-center"
+                      placeholder="54321"
+                      aria-label="lastfive"
+                      aria-describedby="basic-addon1"
+                      v-model="userData.lastfive"
+                      ref="input2"
+                      v-validate="'required'"
+                      data-vv-as="末五碼"
+                      maxlength="5"
+                      minlength="5"
+                    />
+                  </div>
                   <span class="text-danger" v-show="errors.has('firstFive')">{{
                     errors.first("firstFive")
                   }}</span>
 
-                  <input
-                    type="text"
-                    name="lastfive"
-                    class="form-control col"
-                    placeholder="54321"
-                    aria-label="lastfive"
-                    aria-describedby="basic-addon1"
-                    v-model="userData.lastfive"
-                    ref="input2"
-                    v-validate="'required'"
-                    data-vv-as="末五碼"
-                    maxlength="5"
-                    minlength="5"
-                  />
                   <span class="text-danger" v-show="errors.has('lastfive')">{{
                     errors.first("lastfive")
                   }}</span>
@@ -241,6 +243,7 @@ import axios from "axios";
 export default {
   data() {
     return {
+      isLoading: false,
       divider: 6,
       customers: [],
       userData: {
@@ -267,12 +270,13 @@ export default {
   methods: {
     getData() {
       let vm = this;
+      vm.isLoading = true;
       axios
         .get("http://localhost:3000/laundry")
         .then((response) => {
           vm.customers = response.data;
           vm.pageNumber(); // 在新增資料後呼叫 pageNumber 方法更新頁碼
-          console.log(response.data);
+          vm.isLoading = false;
         })
         .catch((error) => console.log(error));
     },
@@ -284,10 +288,9 @@ export default {
           // 表單驗證成功
 
           axios
-            .post("http://localhost:3000/laundry", vm.userData)
+            .post(`${process.env.VUE_APP_MYAPI}/laundry`, vm.userData)
             .then((response) => {
               vm.customer = response.data;
-              console.log(response.data);
               vm.clearAll();
               vm.getData();
 
@@ -314,8 +317,6 @@ export default {
       vm.$set(vm.userData.clothing, val, {
         num: 0,
       });
-
-      console.log(vm.userData);
     },
     clearAll() {
       let vm = this;
@@ -337,7 +338,6 @@ export default {
     },
     pageNumber() {
       let len = this.customers.length;
-      console.log(len);
       if (len === 0) {
         this.userData.page = 1;
       } else {

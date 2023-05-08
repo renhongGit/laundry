@@ -1,17 +1,15 @@
 <template>
   <div>
+    <loading :active.sync="isLoading"></loading>
+
     <main>
       <div
-        class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light"
+        class="position-relative overflow-hidden p-3 p-md-5 text-center bg-light bgi"
       >
-        <div class="col-md-5 p-lg-5 mx-auto my-5">
+        <div class="col-md-5 p-lg-5 mx-auto my-5 bgw text-light rounded">
           <h1 class="display-4 fw-normal">日盛洗衣店</h1>
           <p class="lead fw-normal">專門處裡特殊污漬．採用無菌處裡</p>
         </div>
-        <div class="product-device shadow-sm d-none d-md-block"></div>
-        <div
-          class="product-device product-device-2 shadow-sm d-none d-md-block"
-        ></div>
       </div>
 
       <div class="col-md-5 p-lg-5 mx-auto my-5 text-center">
@@ -94,8 +92,17 @@
 // import "leaflet/dist/leaflet.css";
 import markerIcon2xUrl from "leaflet-css/dist/images/marker-icon-2x.png";
 import markerShadowUrl from "leaflet-css/dist/images/marker-shadow.png";
+
 export default {
+  data() {
+    return {
+      isLoading: true,
+    };
+  },
   mounted() {
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 2000); // 2 秒后隐藏 loading overlay
     this.createMap();
   },
   methods: {

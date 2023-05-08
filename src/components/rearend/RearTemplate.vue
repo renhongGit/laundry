@@ -21,7 +21,7 @@
 
       <div class="navbar-nav">
         <div class="nav-item text-nowrap">
-          <a class="nav-link px-3" href="#">登出 </a>
+          <a class="nav-link px-3" href="#" @click.prevent="signout()">登出 </a>
         </div>
       </div>
     </header>
@@ -36,5 +36,16 @@
 import RearNavbar from "./RearNavbar.vue";
 export default {
   components: { RearNavbar },
+  methods: {
+    signout() {
+      const vm = this;
+      const url = `${process.env.VUE_APP_API}/logout`;
+      this.$http.post(url).then((response) => {
+        if (response.data.success) {
+          vm.$router.push("/signin");
+        }
+      });
+    },
+  },
 };
 </script>

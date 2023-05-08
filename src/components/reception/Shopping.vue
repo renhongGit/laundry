@@ -195,21 +195,18 @@ export default {
   methods: {
     getData() {
       axios
-        .get(`http://localhost:3000/userShopping`)
+        .get(`${process.env.VUE_APP_MYAPI}/userShopping`)
         .then((response) => {
           this.userData = response.data;
-          this.pageNumber(); // 在新增資料後呼叫 pageNumber 方法更新頁碼
-          console.log(response.data);
+          this.pageNumber();
         })
         .catch((error) => console.log(error));
     },
     getUserShopping() {
       axios
-        .get(`http://localhost:3000/shopping`)
+        .get(`${process.env.VUE_APP_MYAPI}/shopping`)
         .then((response) => {
           this.user.shoppingCar = response.data;
-          console.log(response.data);
-          console.log(this.user);
         })
         .catch((error) => console.log(error));
     },
@@ -219,7 +216,7 @@ export default {
           // 表單驗證成功
           this.isProcessing = true; // 顯示 loading 畫面或禁用按鈕
           axios
-            .post("http://localhost:3000/userShopping", this.user)
+            .post(`${process.env.VUE_APP_MYAPI}/userShopping`, this.user)
             .then((response) => {
               console.log(response.data);
               this.$router.push("/shoppingend");

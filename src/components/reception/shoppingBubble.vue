@@ -142,7 +142,7 @@ export default {
   methods: {
     getUserProduct() {
       axios
-        .get(`http://localhost:3000/shopping`)
+        .get(`${process.env.VUE_APP_MYAPI}/shopping`)
         .then((response) => {
           this.userProduct = response.data;
           console.log(this.userProduct);
@@ -154,7 +154,7 @@ export default {
         this.userProduct[index].quantity += 1;
         axios
           .patch(
-            `http://localhost:3000/shopping/${this.userProduct[index].id}`,
+            `${process.env.VUE_APP_MYAPI}/shopping/${this.userProduct[index].id}`,
             {
               quantity: this.userProduct[index].quantity,
             }
@@ -172,7 +172,7 @@ export default {
         this.userProduct[index].quantity -= 1;
         axios
           .patch(
-            `http://localhost:3000/shopping/${this.userProduct[index].id}`,
+            `${process.env.VUE_APP_MYAPI}/shopping/${this.userProduct[index].id}`,
             {
               quantity: this.userProduct[index].quantity,
             }
@@ -195,9 +195,12 @@ export default {
       }
 
       axios
-        .patch(`http://localhost:3000/shopping/${this.userProduct[index].id}`, {
-          quantity: this.userProduct[index].quantity,
-        })
+        .patch(
+          `${process.env.VUE_APP_MYAPI}/shopping/${this.userProduct[index].id}`,
+          {
+            quantity: this.userProduct[index].quantity,
+          }
+        )
         .then((response) => {
           this.userProduct[index].quantity = response.data.quantity;
         })
@@ -208,7 +211,7 @@ export default {
     removeProduct(index) {
       const productId = this.userProduct[index].id;
       axios
-        .delete(`http://localhost:3000/shopping/${productId}`)
+        .delete(`${process.env.VUE_APP_MYAPI}/shopping/${productId}`)
         .then(() => {
           this.userProduct.splice(index, 1);
         })

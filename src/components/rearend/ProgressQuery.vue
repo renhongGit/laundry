@@ -1,5 +1,6 @@
 <template>
   <div>
+    <loading :active.sync="isLoading"></loading>
     <div class="container-fluid">
       <div class="row">
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
@@ -11,15 +12,14 @@
           </div>
 
           <div class="table-responsive">
-            <span class="input-group-text mt-1 w-25 mx-auto"
-              >輸入姓名 或 手機末五碼查詢</span
-            >
-            <span class="text-danger" v-show="errors.has('name')">{{
-              errors.first("name")
-            }}</span>
-            <span class="text-danger" v-show="errors.has('searchNumber')">{{
-              errors.first("searchNumber")
-            }}</span>
+            <div class="mx-auto text-center">
+              <p class="text-danger" v-show="errors.has('name')">
+                {{ errors.first("name") }}
+              </p>
+              <p class="text-danger" v-show="errors.has('searchNumber')">
+                {{ errors.first("searchNumber") }}
+              </p>
+            </div>
             <div class="w-25 input-group m-3 mx-auto">
               <input
                 type="text"
@@ -55,15 +55,20 @@
             </div>
             <button
               type="button"
-              class="btn btn-outline-secondary btn-sm"
+              class="btn btn-outline-secondary btn-sm mb-2"
               @click="refreshPage"
             >
               重新整理
             </button>
             <nav aria-label="Page navigation example">
               <ul class="pagination">
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Previous">
+                <li class="page-item" v-if="currentPage > 1">
+                  <a
+                    class="page-link"
+                    href="#"
+                    aria-label="Previous"
+                    @click.prevent="setCurrentPage(currentPage - 1)"
+                  >
                     <span aria-hidden="true">&laquo;</span>
                   </a>
                 </li>
@@ -80,8 +85,13 @@
                     >{{ page }}</a
                   >
                 </li>
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Next">
+                <li class="page-item" v-if="currentPage < totalPages">
+                  <a
+                    class="page-link"
+                    href="#"
+                    aria-label="Next"
+                    @click.prevent="setCurrentPage(currentPage + 1)"
+                  >
                     <span aria-hidden="true">&raquo;</span>
                   </a>
                 </li>
@@ -217,6 +227,7 @@ import axios from "axios";
 export default {
   data() {
     return {
+      isLoading: false,
       customer: [],
       searchNumber: "",
       searchName: "",
@@ -254,11 +265,12 @@ export default {
   methods: {
     getData() {
       let vm = this;
+      vm.isLoading = true;
       axios
-        .get("http://localhost:3000/laundry")
+        .get(`${process.env.VUE_APP_MYAPI}/laundry`)
         .then((response) => {
           vm.customer = response.data;
-          console.log(response.data);
+          vm.isLoading = false;
           this.pageContent();
         })
         .catch((error) => console.log(error));
@@ -288,8 +300,6 @@ export default {
 
           vm.searchNumber = "";
           vm.searchName = "";
-          console.log(vm.specifyContent);
-          console.log(vm.switchList);
         } else {
           // 表單驗證失敗
           this.$nextTick(() => {
@@ -307,7 +317,7 @@ export default {
       let id = event.currentTarget.dataset.id;
       console.log(id);
       axios
-        .patch(`http://localhost:3000/laundry/${id}`, {
+        .patch(`${process.env.VUE_APP_MYAPI}/laundry/${id}`, {
           progress: "已完成清洗，待取件。",
         })
         .then((response) => {
@@ -315,12 +325,11 @@ export default {
           // 重新取得資料並更新 specifyContent
 
           axios
-            .get("http://localhost:3000/laundry")
+            .get(`${process.env.VUE_APP_MYAPI}/laundry`)
             .then((response) => {
               vm.customer = response.data;
               vm.specifyContent = vm.customer.filter((obj) => obj.id == id);
               vm.pageContent();
-              console.log(specifyContent);
             })
             .catch((error) => console.log(error));
         })
@@ -331,16 +340,15 @@ export default {
     pickedUp(event) {
       let vm = this;
       let id = event.currentTarget.dataset.id;
-      console.log(id);
       axios
-        .patch(`http://localhost:3000/laundry/${id}`, {
+        .patch(`${process.env.VUE_APP_MYAPI}/laundry/${id}`, {
           progress: "已取件。",
         })
         .then((response) => {
           console.log(response);
           // 重新取得資料並更新 specifyContent
           axios
-            .get("http://localhost:3000/laundry")
+            .get(`${process.env.VUE_APP_MYAPI}/laundry`)
             .then((response) => {
               vm.customer = response.data;
               vm.specifyContent = vm.customer.filter((obj) => obj.id == id);
@@ -358,13 +366,11 @@ export default {
     setCurrentPage(page) {
       this.currentPage = page;
       this.pageContent();
-      console.log(this.currentPage);
     },
     pageContent() {
       let data = this.customer;
       let currentPage = this.currentPage;
       this.specifyPage = data.filter((item) => item.page === currentPage);
-      console.log(this.specifyPage);
     },
   },
 };
