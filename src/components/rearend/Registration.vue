@@ -272,7 +272,7 @@ export default {
       let vm = this;
       vm.isLoading = true;
       axios
-        .get("http://localhost:3000/laundry")
+        .get(`${process.env.VUE_APP_MYAPI}/laundry`)
         .then((response) => {
           vm.customers = response.data;
           vm.pageNumber(); // 在新增資料後呼叫 pageNumber 方法更新頁碼

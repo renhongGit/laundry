@@ -93,7 +93,7 @@ export default {
   },
   mounted() {
     axios
-      .get(`http://localhost:3000/Commodity/${this.$route.params.id}`)
+      .get(`${process.env.VUE_APP_MYAPI}/Commodity/${this.$route.params.id}`)
       .then((response) => {
         this.product = response.data;
       })
@@ -125,7 +125,7 @@ export default {
         img: this.product.img,
       });
       axios
-        .post("http://localhost:3000/shopping", this.userProduct)
+        .post(`${process.env.VUE_APP_MYAPI}/shopping`, this.userProduct)
         .then((response) => {
           this.refreshPage();
           console.log(response.data);
