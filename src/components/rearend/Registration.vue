@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg">
     <loading :active.sync="isLoading"></loading>
     <div class="container-fluid">
       <div class="row">
@@ -238,6 +238,11 @@
     </div>
   </div>
 </template>
+<style scoped>
+.bg {
+  background: #ffffff;
+}
+</style>
 <script>
 import axios from "axios";
 export default {

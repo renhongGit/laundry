@@ -1,7 +1,7 @@
 <template>
   <header class="site-header sticky-top py-1">
     <nav
-      class="container d-flex flex-column flex-md-row justify-content-between"
+      class="container d-flex flex-column flex-md-row justify-content-around fs-5 fw-bolder"
     >
       <router-link class="py-2" to="/home">
         <a href="#" aria-label="Product">
@@ -12,7 +12,7 @@
             class="d-block mx-auto bi bi-house"
           ></i>
 
-          <title>Product</title>
+          <title>日盛洗衣店</title>
           <circle cx="12" cy="12" r="10" />
           <path
             d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94"
@@ -30,7 +30,7 @@
         送洗狀態
       </router-link>
       <router-link class="py-2 d-none d-md-inline-block" to="/QA">
-        Q&A
+        常見問題
       </router-link>
     </nav>
   </header>

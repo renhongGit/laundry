@@ -3,7 +3,7 @@
     <shopping-bubble></shopping-bubble>
     <main class="container mt-5">
       <h3 class="mb-4">洗衣用品</h3>
-      <div class="d-flex w-100">
+      <div class="d-flex w-100 fw-bolder">
         <div style="width: 15%" class="list-group mt-2 me-4">
           <router-link
             class="list-group-item list-group-item-action"

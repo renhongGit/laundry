@@ -4,7 +4,7 @@
     <div class="shopping-bubble">
       <button
         type="button"
-        class="btn btn-primary position-relative"
+        class="btn btn-outline-info position-relative fw-bolder"
         data-bs-toggle="modal"
         data-bs-target="#cartModal"
         @click="getUserProduct()"

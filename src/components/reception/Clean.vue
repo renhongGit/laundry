@@ -7,23 +7,25 @@
           :to="{ name: 'product', params: { id: item.id } }"
           class="my-link-class"
         >
-          <div class="card h-100">
+          <div class="card border border-2 h-100">
             <div class="card-body">
               <img
-                :src="item.img"
+                v-lazy="item.img"
                 class="card-img-top commodityImg mb-3"
                 alt="..."
               />
               <h5 class="card-title fw-bold">{{ item.title }}</h5>
-              <p class="card-text fs-6 text">{{ item.description }}</p>
+              <p class="card-text fs-6 fw-normal">
+                {{ item.description }}
+              </p>
             </div>
             <div
-              class="d-flex justify-content-between align-items-baseline px-3"
+              class="d-flex justify-content-evenly align-items-baseline px-1"
             >
               <span class="text-decoration-line-through"
                 >售價: NT. {{ item.origin_price }}</span
               >
-              <span class="fs-5">特價: NT. {{ item.price }}</span>
+              <span class="fs-5 text-danger">特價: NT. {{ item.price }}</span>
             </div>
           </div>
         </router-link>
@@ -33,6 +35,15 @@
 </template>
 
 <style>
+.card {
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.1);
+  z-index: 10;
+}
+
 .my-link-class {
   color: inherit; /* 取消文字顏色預設值 */
 

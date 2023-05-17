@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="bg">
     <Navbar></Navbar>
     <main>
       <router-view></router-view>
     </main>
     <!-- 底部 -->
 
-    <footer class="container row mx-auto text-center border-top py-3 my-4">
+    <footer class="bg row mx-auto text-center border-top mt-5 py-3 fw-bolder">
       <div class="col">
         <p>嘉義市西區友愛路190號</p>
         <p>周一至周六 10:00~22:00</p>
@@ -36,3 +36,9 @@
 import Navbar from "./Navbar.vue";
 export default { components: { Navbar } };
 </script>
+
+<style>
+.bg {
+  background-color: #f0f8ff;
+}
+</style>

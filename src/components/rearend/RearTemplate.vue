@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg">
     <header
       class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow"
     >
@@ -31,7 +31,12 @@
     </main>
   </div>
 </template>
-
+<style scoped>
+.bg {
+  background: #ffffff;
+  height: 100vh;
+}
+</style>
 <script>
 import RearNavbar from "./RearNavbar.vue";
 export default {

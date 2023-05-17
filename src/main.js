@@ -24,6 +24,9 @@ import 'vue-loading-overlay/dist/vue-loading.css';
 Vue.component('Loading',Loading)
 
 
+import VueLazyload from 'vue-lazyload';
+Vue.use(VueLazyload);
+
 import axios from "axios";
 import VueAxios from "vue-axios";
 Vue.use(VueAxios, axios);

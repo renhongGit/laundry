@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <main class="container mx-auto text-center mt-5">
+  <div class="container">
+    <main class="mx-auto text-center mt-5">
       <span class="text-danger" v-show="errors.has('searchNumber')">{{
         errors.first("searchNumber")
       }}</span>
@@ -16,7 +16,11 @@
         data-vv-as="查詢欄位"
         maxlength="5"
       />
-      <button type="button" class="btn btn-primary mt-3" @click="find">
+      <button
+        type="button"
+        class="btn btn-outline-secondary mt-3"
+        @click="find"
+      >
         查詢
       </button>
       <h2 class="mt-5">送洗進度</h2>
@@ -51,6 +55,18 @@
     </main>
   </div>
 </template>
+<style scoped>
+.container {
+  height: 70vh;
+}
+.form-control:hover {
+  transform: scale(1.1);
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+</style>
 
 <script>
 import axios from "axios";

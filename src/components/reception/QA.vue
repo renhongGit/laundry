@@ -1,10 +1,13 @@
 <template>
   <div class="container">
-    <div class="m-4 accordion accordion-flush" id="accordionFlushExample">
-      <div class="accordion-item">
+    <div
+      class="m-4 accordion accordion-flush border border-3 rounded"
+      id="accordionFlushExample"
+    >
+      <div class="accordion-item bg">
         <h2 class="accordion-header" id="flush-headingOne">
           <button
-            class="accordion-button collapsed"
+            class="accordion-button collapsed fw-bold fs-5"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#flush-collapseOne"
@@ -16,7 +19,7 @@
         </h2>
         <div
           id="flush-collapseOne"
-          class="accordion-collapse collapse show"
+          class="accordion-collapse collapse show fw-bold"
           aria-labelledby="flush-headingOne"
           data-bs-parent="#accordionFlushExample"
         >
@@ -28,10 +31,10 @@
           </div>
         </div>
       </div>
-      <div class="accordion-item">
+      <div class="accordion-item bg">
         <h2 class="accordion-header" id="flush-headingTwo">
           <button
-            class="accordion-button collapsed"
+            class="accordion-button collapsed fw-bold fs-5"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#flush-collapseTwo"
@@ -43,7 +46,7 @@
         </h2>
         <div
           id="flush-collapseTwo"
-          class="accordion-collapse collapse show"
+          class="accordion-collapse collapse show fw-bold"
           aria-labelledby="flush-headingTwo"
           data-bs-parent="#accordionFlushExample"
         >
@@ -52,10 +55,10 @@
           </div>
         </div>
       </div>
-      <div class="accordion-item">
+      <div class="accordion-item bg">
         <h2 class="accordion-header" id="flush-headingThree">
           <button
-            class="accordion-button collapsed"
+            class="accordion-button collapsed fw-bold fs-5"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#flush-collapseThree"
@@ -67,7 +70,7 @@
         </h2>
         <div
           id="flush-collapseThree"
-          class="accordion-collapse collapse show"
+          class="accordion-collapse collapse show fw-bold"
           aria-labelledby="flush-headingThree"
           data-bs-parent="#accordionFlushExample"
         >
@@ -81,3 +84,11 @@
     </div>
   </div>
 </template>
+<style scoped>
+.container {
+  height: 70vh;
+}
+.bg {
+  background: #e9ebef;
+}
+</style>
